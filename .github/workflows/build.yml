@@ -1,0 +1,76 @@
+name: Releases
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-app:
+    name: Build Application
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get tag
+        id: tag
+        uses: devops-actions/action-get-tag@v1.0.1
+        with:
+          strip_v: true
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 2.19.1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Build Windows App
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir build
+          dart compile exe .\bin\deltazx_authenticator.dart -o .\build\dau-${{ steps.tag.outputs.tag }}-windows-amd64.exe
+    
+      - name: Build Linux App
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir build
+          dart compile exe ./bin/deltazx_authenticator.dart -o ./build/dau-${{ steps.tag.outputs.tag }}-linux-amd64
+
+      - name: Upload Build Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/
+
+  release:
+    name: Release App
+
+    needs: build-app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tag
+        id: tag
+        uses: devops-actions/action-get-tag@v1.0.1
+        with:
+          strip_v: true
+
+      - name: Download the build result
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Release App
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*"
+          name: DeltaZX_Authenticator Auto Release v${{ steps.tag.outputs.tag }}
+          token: ${{ secrets.TOKEN }}
+
+# 参考: https://www.bilibili.com/video/BV1uv4y1w7Yc/
