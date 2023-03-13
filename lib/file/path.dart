@@ -15,6 +15,9 @@ class Path {
     } else if (Platform.isLinux) {
       var userHome = env['HOME'];
       return join(userHome!,'.deltazxapp','deltazx_authenticator');
+    } else if (Platform.isMacOS) {
+      var userHome = env['HOME'];
+      return join(userHome!,'.deltazxapp','deltazx_authenticator');
     }
 
     return "";
