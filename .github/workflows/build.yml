@@ -1,4 +1,4 @@
-name: Releases
+name: Release
 
 on:
   push:
@@ -6,41 +6,67 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-app:
-    name: Build Application
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+  build-app-windows:
+    name: build-app-windows
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get tag
-        id: tag
-        uses: devops-actions/action-get-tag@v1.0.1
-        with:
-          strip_v: true
-
-      - name: Setup Dart SDK
+      - name: Get Dart SDK AMD64
         uses: dart-lang/setup-dart@v1
         with:
           sdk: 2.19.1
+          architecture: x64
 
-      - name: Install dependencies
-        run: dart pub get
+      - name: Build App AMD64
+        run: dart .\bin\make.dart
 
-      - name: Build Windows App
-        if: matrix.os == 'windows-latest'
-        run: |
-          mkdir build
-          dart compile exe .\bin\deltazx_authenticator.dart -o .\build\dau-${{ steps.tag.outputs.tag }}-windows-amd64.exe
-    
-      - name: Build Linux App
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          mkdir build
-          dart compile exe ./bin/deltazx_authenticator.dart -o ./build/dau-${{ steps.tag.outputs.tag }}-linux-amd64
+      - name: Upload Build Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build\
+
+
+  build-app-linux:
+    name: build-app-linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get Dart SDK AMD64
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 2.19.1
+          architecture: x64
+
+      - name: Build App AMD64
+        run: dart ./bin/make.dart
+
+      - name: Upload Build Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/
+
+
+  build-app-macos:
+    name: build-app-macos
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get Dart SDK AMD64
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 2.19.1
+          architecture: x64
+
+      - name: Build App AMD64
+        run: dart ./bin/make.dart
 
       - name: Upload Build Result
         uses: actions/upload-artifact@v3
@@ -51,7 +77,7 @@ jobs:
   release:
     name: Release App
 
-    needs: build-app
+    needs: [ build-app-windows, build-app-linux, build-app-macos ]
     runs-on: ubuntu-latest
 
     steps:
