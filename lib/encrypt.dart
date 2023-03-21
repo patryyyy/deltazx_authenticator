@@ -44,8 +44,8 @@ class EncryptSecret {
       final decrypted = encryptor.decrypt(Encrypted.fromBase64(data), iv: iv);
       return decrypted;
     } catch (err) {
-      stderr.writeln("\nAuthentication failure");
-      exit(2);
+      stderr.writeln("Authentication failure");
+      exit(1);
     }
 
   }
