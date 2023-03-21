@@ -15,7 +15,6 @@ class Input {
     if (ConfigINI.exist() == false) {
       stdout.write("Please input a password: ");
       _password = stdin.readLineSync();
-      // stdout.write('\n');
 
       while (true) {
         if (_isRight.hasMatch(_password!)) {

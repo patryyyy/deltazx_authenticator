@@ -45,11 +45,11 @@ class ConfigINI {
       Config config = new Config.fromStrings(file.readAsLinesSync());
       if (exist() == false) {
         stderr.writeln('No such account');
-      } else if (config.hasOption('secret', option) == false) {
+      } else if (config.hasOption('account', option) == false) {
         stderr.writeln('No such account');
       }
       else {
-        config.removeOption('secret', option);
+        config.removeOption('account', option);
         file.writeAsStringSync(config.toString());
       }
     }
@@ -60,8 +60,11 @@ class ConfigINI {
       return false;
     } else {
       Config config = new Config.fromStrings(file.readAsLinesSync());
-      var temp = config.items('secret');
-      return temp!.isNotEmpty;
+      if (config.hasSection('account')) {
+        var temp = config.items('account');
+        return temp!.isNotEmpty;
+      }
+      return false;
     }
   }
 }
