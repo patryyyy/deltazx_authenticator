@@ -12,7 +12,7 @@ class Account {
     stdout.write('What name would you like to take? ');
     String str = stdin.readLineSync()!;
     if (config.hasOption('account', str)) {
-      stderr.writeln('Account already exists');
+      stderr.writeln('ERROR: Account already exists.');
       return;
     }
 
@@ -26,7 +26,7 @@ class Account {
 
     Config config = Config.fromStrings(ConfigINI.file.readAsLinesSync());
     if (config.items('account')!.isEmpty) {
-      stderr.writeln('No such account');
+      stderr.writeln('ERROR: No such account.');
     } else {
       for (var i = 0;i < config.items('account')!.length; i++) {
         list.add(config.items('account')![i][0]!);

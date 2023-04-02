@@ -19,7 +19,7 @@ void main(List<String> args) {
 void printVerificationCode() {
   if (ConfigINI.exist()) {
     Config config = Config.fromStrings(ConfigINI.file.readAsLinesSync());
-    stdout.write("\x1b[H\x1b[2J");
+    stdout.write('\x1b[H\x1b[2J');
 
     List<String> accountList = Account.searchAccount;
 
@@ -28,11 +28,10 @@ void printVerificationCode() {
       for (var i = accountList.length; i > 0; i--) {
         String key = config.get('account', accountList[accountList.length - i])!;
 
-        stdout.write(
-            "${accountList[accountList.length - i]}:\t${GenerateVerificationCode.verificationCode(EncryptSecret.decodeData(key))}\n");
+        stdout.write('${accountList[accountList.length - i]}:\t${GenerateVerificationCode.verificationCode(EncryptSecret.decodeData(key))}\n');
       }
       sleep(Duration(seconds: 2));
-      stdout.write("\x1b[H\x1b[2J");
+      stdout.write('\x1b[H\x1b[2J');
     }
   }
 }

@@ -16,9 +16,9 @@ class RmCommand extends Command {
     final arguments = argResults!.arguments;
 
     if (arguments.isEmpty) {
-      stderr.writeln('Error: No account name passed in.');
+      stderr.writeln('ERROR: No account name passed in.');
     } else if (arguments.length > 1) {
-      stdout.write('Warning: You have passed in multiple arguments, only the first argument will be used\n');
+      stdout.writeln('WARNING: You have passed in multiple arguments, only the first argument will be used.');
       Account.deleteAccount(arguments.first);
     } else {
       Account.deleteAccount(arguments.first);

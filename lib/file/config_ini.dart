@@ -40,13 +40,13 @@ class ConfigINI {
 
   void delete(String option) {
     if (file.existsSync() == false) {
-      stderr.writeln('No such account');
+      stderr.writeln('ERROR: No such account.');
     } else {
       Config config = new Config.fromStrings(file.readAsLinesSync());
       if (exist() == false) {
-        stderr.writeln('No such account');
+        stderr.writeln('ERROR: No such account.');
       } else if (config.hasOption('account', option) == false) {
-        stderr.writeln('No such account');
+        stderr.writeln('ERROR: No such account.');
       }
       else {
         config.removeOption('account', option);

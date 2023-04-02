@@ -9,7 +9,7 @@ class Args extends CommandRunner {
 
   @override
   Never usageException(String message) {
-    stderr.writeln('\'${_args.first}\' is not a dau command.');
+    stderr.writeln('ERROR: \'${_args.first}\' is not a dau command.');
     exit(1);
   }
 

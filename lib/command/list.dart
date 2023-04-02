@@ -15,7 +15,7 @@ class ListCommand extends Command {
   void run() {
     final accountList = Account.searchAccount;
     if (accountList.isEmpty) {
-      stderr.writeln('No such account');
+      stderr.writeln('ERROR: No such account.');
     } else {
       accountList.forEach((element) => print(element));
     }

@@ -13,19 +13,19 @@ class Input {
 
     // 如果不存在就设置密码
     if (ConfigINI.exist() == false) {
-      stdout.write("Please input a password: ");
+      stdout.write('Please input a password: ');
       _password = stdin.readLineSync();
 
       while (true) {
         if (_isRight.hasMatch(_password!)) {
           break;
         } else {
-          stdout.write('The password must contain at least letters and numbers and be greater than 10 digits, Please re-enter: \n');
+          stdout.writeln('The password must contain at least letters and numbers and be greater than 10 digits, Please re-enter:');
           _password = stdin.readLineSync();
         }
       }
     } else {
-      stdout.write("Please input a password: ");
+      stdout.write('Please input a password: ');
       _password = stdin.readLineSync();
     }
     return _password!;

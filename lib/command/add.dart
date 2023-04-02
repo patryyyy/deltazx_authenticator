@@ -16,9 +16,9 @@ class AddCommand extends Command {
     final arguments = argResults!.arguments;
 
     if (arguments.isEmpty) {
-      stderr.writeln('Error: No key passed in.');
+      stderr.writeln('ERROR: No key passed in.');
     } else if (arguments.length > 1) {
-      stdout.write('Warning: You have passed in multiple arguments, only the first argument will be used\n');
+      stdout.writeln('WARNING: You have passed in multiple arguments, only the first argument will be used.');
       Account.addAccount(arguments.first);
     } else {
       Account.addAccount(arguments.first);
