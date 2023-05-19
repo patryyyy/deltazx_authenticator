@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
-import 'package:deltazx_authenticator/account.dart';
+import '../account.dart';
 
 class ListCommand extends Command {
   @override
@@ -13,9 +13,10 @@ class ListCommand extends Command {
 
   @override
   void run() {
-    final accountList = Account.searchAccount;
+    final accountList = Account().accountList;;
     if (accountList.isEmpty) {
       stderr.writeln('ERROR: No such account.');
+      exit(1);
     } else {
       accountList.forEach((element) => print(element));
     }
