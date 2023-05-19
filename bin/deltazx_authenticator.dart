@@ -1,12 +1,6 @@
 import 'dart:io';
 
-import 'package:ini/ini.dart';
-
-import 'package:deltazx_authenticator/args.dart';
-import 'package:deltazx_authenticator/file/config_ini.dart';
-import 'package:deltazx_authenticator/generate_verification_code.dart';
-import 'package:deltazx_authenticator/account.dart';
-import 'package:deltazx_authenticator/encrypt.dart';
+import 'package:deltazx_authenticator/deltazx_authenticator.dart';
 
 void main(List<String> args) {
   if (args.isNotEmpty) {
@@ -17,22 +11,22 @@ void main(List<String> args) {
 }
 
 void printVerificationCode() {
-  if (ConfigINI.exist()) {
-    Config config = Config.fromStrings(ConfigINI.file.readAsLinesSync());
-    stdout.write("\x1b[H\x1b[2J");
+  Account account = Account();
+  if (account.exist()) {
+    Ini config = Ini(account.prefix);
 
-    List<String> accountList = Account.searchAccount;
+    stdout.write('\x1b[H\x1b[2J');
 
+    List<String> accountList = account.accountList;
 
     while (true) {
       for (var i = accountList.length; i > 0; i--) {
-        String key = config.get('account', accountList[accountList.length - i])!;
+        String key = config.get('account', accountList[accountList.length - i]);
 
-        stdout.write(
-            "${accountList[accountList.length - i]}:\t${GenerateVerificationCode.verificationCode(EncryptSecret.decodeData(key))}\n");
+        stdout.write('${accountList[accountList.length - i]}:\t${GenerateVerificationCode.verificationCode(EncryptSecret.decodeData(key))}\n');
       }
       sleep(Duration(seconds: 2));
-      stdout.write("\x1b[H\x1b[2J");
+      stdout.write('\x1b[H\x1b[2J');
     }
   }
 }

@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:encrypt/encrypt.dart';
 import 'package:sm_crypto/sm_crypto.dart';
 
-import 'package:deltazx_authenticator/input.dart';
+import 'input.dart';
 
 final _String_key = SM4.createHexKey(key: _temp_key);
 final _String_iv  = _temp_iv;
 final _temp1 = utf8.encode('85F9#&&9947CB24821EC%^&*512A617AF4EB5641${_temp2}236DEB09474*p&^^045F7FF3AFA?|{43E90E19E');
-final _temp2 = utf8.encode('iuhesy8f${Input.inputPassword()}0x6724Y');
+final _temp2 = utf8.encode('iuhesy8f${Input.inputPassword}0x6724Y');
 final _temp_key = SM3.encryptBytes(_temp2);
 final _temp_iv = _cut(SM3.encryptBytes(_temp1));
 
@@ -44,7 +44,7 @@ class EncryptSecret {
       final decrypted = encryptor.decrypt(Encrypted.fromBase64(data), iv: iv);
       return decrypted;
     } catch (err) {
-      stderr.writeln("Authentication failure");
+      stderr.writeln('ERROR: Authentication failure.');
       exit(1);
     }
 

@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
-import 'package:deltazx_authenticator/command/_export.dart';
+import 'command/export.dart';
 
 class Args extends CommandRunner {
   Args(super.executableName, super.description);
 
   @override
   Never usageException(String message) {
-    stderr.writeln('\'${_args.first}\' is not a dau command.');
+    stderr.writeln('ERROR: \'${_args.first}\' is not a dau command.');
     exit(1);
   }
 
