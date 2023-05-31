@@ -68,7 +68,7 @@ dau version
 
 ## 许可证
 
-本项目自**e573dada8c350b1db4119b46c2a25244198c72f3**提交后，采用**[MIT](https://github.com/patryyyy/deltazx_authenticator/blob/main/LICENSE)**许可证
+本项目自**e573dada8c350b1db4119b46c2a25244198c72f3**提交后，采用[**MIT**](https://github.com/patryyyy/deltazx_authenticator/blob/main/LICENSE)许可证
 
 ~~LGPL-3.0~~已不再使用
 
