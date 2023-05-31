@@ -3,23 +3,21 @@ import 'dart:io';
 import 'package:path/path.dart';
 
 class Path {
-  String? name;
-  String? value;
-
-  static String get location {
+  static String get userHome {
     Map<String, String> env = Platform.environment;
 
-    if (Platform.isWindows) {
-      var userHome = env['USERPROFILE'];
-      return join(userHome!,'.deltazxapp','deltazx_authenticator');
-    } else if (Platform.isLinux) {
-      var userHome = env['HOME'];
-      return join(userHome!,'.deltazxapp','deltazx_authenticator');
-    } else if (Platform.isMacOS) {
-      var userHome = env['HOME'];
-      return join(userHome!,'.deltazxapp','deltazx_authenticator');
-    }
+    try {
+      if (Platform.isWindows) {
+        return env['USERPROFILE']!;
+      } else if (Platform.isLinux || Platform.isMacOS || Platform.isAndroid) {
+        return env['HOME']!;
+      }
+    } catch (e) {}
 
-    return "";
+    return "~";
+  }
+
+  static String get location {
+    return join(userHome, '.dau');
   }
 }
