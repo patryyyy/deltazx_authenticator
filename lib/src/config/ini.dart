@@ -4,7 +4,15 @@ typedef Section = Map<String, String>;
 
 class Ini {
   Ini(String path) : this._path = path {
-    load();
+    try {
+      load();
+    } on FileSystemException catch (e) {
+      if (e.osError == null) {
+        stderr.writeln(e.message);
+      }
+      stderr.writeln("ERROR: ${e.osError!.message}");
+      exit(e.osError!.errorCode);
+    }
   }
 
   String _path;
@@ -22,7 +30,7 @@ class Ini {
       if (lineCount == line.length) {
         break;
       }
-      // 获取每一行，去除前后的空格
+      // 获取每一行, 去除前后的空格
       var temp = line[lineCount].trim();
 
       // 匹配注释
@@ -129,7 +137,7 @@ class Ini {
     _sections.clear();
   }
 
-  /// Returns the Sections is empty.
+  /// Returns whether Sections are empty.
   bool get isEmpty {
     return _sections.isEmpty;
   }
@@ -137,9 +145,15 @@ class Ini {
   /// Write the Sections to file, without comment.
   /// If the [path] is not null, the file will be saved to the [path].
   /// If [description] is specified, it will be written in the header of the file.
-  void write([String? path, String description = ""]) {
+  void write({String? path, String description = ""}) {
     var f = File(path == null ? this._path : path)..createSync(recursive: true);
-    f.writeAsStringSync(this.toString());
+    StringBuffer str = StringBuffer();
+    if (description.isEmpty) {
+      str.writeln(this.toString());
+    }
+    str.writeln("; $description\n");
+    str.writeln(this.toString());
+    f.writeAsStringSync(str.toString());
   }
 
   /// Convert the Sections to [String].

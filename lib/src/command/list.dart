@@ -9,16 +9,24 @@ class ListCommand extends Command {
   String get name => 'list';
 
   @override
-  String get description => 'View added accounts';
+  String get description => 'View added accounts.';
+
+  ListCommand() {
+    argParser.addOption("prefix", abbr: "p", help: "Specify the path to save the Account.");
+  }
 
   @override
   void run() {
-    final accountList = Account().accountList;;
-    if (accountList.isEmpty) {
+    if (_list(argResults!["prefix"]).isEmpty) {
       stderr.writeln('ERROR: No such account.');
       exit(1);
     } else {
-      accountList.forEach((element) => print(element));
+      _list(argResults!["prefix"]).forEach((element) => print(element));
     }
+  }
+
+  List<String> _list([String? prefix]) {
+    final accountList = Account(prefix).accountList;
+    return accountList;
   }
 }
