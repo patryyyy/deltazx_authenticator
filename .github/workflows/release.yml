@@ -6,97 +6,108 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-app-windows:
-    name: build-app-windows
+  build_for_windows:
+    name: Build for Windows
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get Dart SDK AMD64
+      - name: Set up Dart SDK x64
         uses: dart-lang/setup-dart@v1
         with:
-          sdk: 2.19.1
+          sdk: 2.19.6
           architecture: x64
 
-      - name: Build App AMD64
+      - name: Build for x64
         run: dart .\bin\make.dart
 
-      - name: Upload Build Result
+      - name: Upload build target
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: build\
 
 
-  build-app-linux:
-    name: build-app-linux
+  build_for_linux:
+    name: Build for Linux
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get Dart SDK AMD64
+      - name: Set up Dart SDK x64
         uses: dart-lang/setup-dart@v1
         with:
-          sdk: 2.19.1
+          sdk: 2.19.6
           architecture: x64
 
-      - name: Build App AMD64
+      - name: Build for x64
         run: dart ./bin/make.dart
 
-      - name: Upload Build Result
+      - name: Upload build target
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: build/
 
 
-  build-app-macos:
-    name: build-app-macos
+  build_for_macos:
+    name: Build for macOS
     runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get Dart SDK AMD64
+      - name: Set up Dart SDK x64
         uses: dart-lang/setup-dart@v1
         with:
-          sdk: 2.19.1
+          sdk: 2.19.6
           architecture: x64
 
-      - name: Build App AMD64
+      - name: Build for x64
         run: dart ./bin/make.dart
 
-      - name: Upload Build Result
+      - name: Upload build target
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: build/
 
   release:
-    name: Release App
+    name: Release
 
-    needs: [ build-app-windows, build-app-linux, build-app-macos ]
+    needs: [ build_for_windows, build_for_linux, build_for_macos ]
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Get tag
         id: tag
         uses: devops-actions/action-get-tag@v1.0.1
-        with:
-          strip_v: true
 
-      - name: Download the build result
+      - name: Download the build targets
         uses: actions/download-artifact@v3
         with:
           name: build
+          path: build/
 
-      - name: Release App
+      - name: Generate release notes
+        uses: mikepenz/release-changelog-builder-action@v3
+        id: release_notes
+        with:
+          configuration: ".github/configuration.json"
+          toTag: ${{ steps.tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*"
-          name: DeltaZX_Authenticator Auto Release v${{ steps.tag.outputs.tag }}
-          token: ${{ secrets.TOKEN }}
+          artifacts: "build/*"
+          name: Release-${{ steps.tag.outputs.tag }}
+          body: ${{ steps.release_notes.outputs.changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
 # 参考: https://www.bilibili.com/video/BV1uv4y1w7Yc/
